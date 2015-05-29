@@ -1,0 +1,11 @@
+// *** Icon ***
+
+#todoer-icon {
+    background: url(../images/todoer-icon.png) no-repeat 0 0;
+    color:#BBBBBB;
+}
+
+#todoer-icon.active {
+    background: url(../images/todoer-icon.png) no-repeat 0 0;
+    color:#78B2F2;
+}

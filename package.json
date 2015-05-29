@@ -1,0 +1,23 @@
+{
+    "name": "yourname.your-extension-id",
+    "title": "Todoer",
+    "description": "Collect todo comments to a list to manage and eliminate",
+    "homepage": "https://github.com/bliitzkrieg/todoer",
+    "version": "0.5.0",
+    "author": "Luca DeCaprio <luca@decapr.io> (decapr.io)",
+    "license": "MIT",
+    "repository": {
+		"type": "git",
+		"url": "https://github.com/bliitzkrieg/todoer"
+	},
+    "keywords": [
+        "brackets",
+        "todo"
+    ],
+    "engines": {
+        "brackets": ">=0.24.0"
+    },
+    "i18n": [ "en"],
+    "package-i18n": {
+    }
+}
