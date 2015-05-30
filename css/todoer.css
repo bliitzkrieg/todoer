@@ -9,3 +9,8 @@
     background: url(../images/todoer-icon.png) no-repeat 0 0;
     color:#78B2F2;
 }
+
+.close{
+    float:right;
+    color:#BBBBBB;
+}

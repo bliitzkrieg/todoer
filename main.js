@@ -1,31 +1,80 @@
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, regexp: true, indent: 4, maxerr: 50 */
 /*global define, $, brackets, window */
 
-/** Simple extension that adds a "File > Hello World" menu item */
 define(function (require, exports, module) {
     "use strict";
+    
+    /**
+    * Constants
+    */
+    
+    var EXTENSION_NAME = "Todoer";
+    
+    /**
+    * Variables
+    */   
+    var CommandManager     = brackets.getModule("command/CommandManager"),
+        Menus              = brackets.getModule("command/Menus"),
+        KeyBindingManager  = brackets.getModule('command/KeyBindingManager'),
+        WorkspaceManager   = brackets.getModule('view/WorkspaceManager'),
+        ExtensionUtils     = brackets.getModule('utils/ExtensionUtils'),
+        AppInit            = brackets.getModule('utils/AppInit'),
+        todoerIcon         = $('<a title="' + EXTENSION_NAME + '" id="todoer-icon"></a>'),
+        panelTemplate      = require('text!html/panel.html'),
+        panel;
+    
+    /**
+     * Description: Adds menu commands.
+     */
+    function addMenuCommands() {
+        var navigateMenu = Menus.getMenu(Menus.AppMenuBar.NAVIGATE_MENU),
+            viewMenu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU),
+            registerCommandHandler = function (commandId, menuName, handler, shortcut, menu) {
+                CommandManager.register(menuName, commandId, handler);
+                menu.addMenuItem(commandId);
+                KeyBindingManager.addBinding(commandId, shortcut);
+            };
 
-    var CommandManager = brackets.getModule("command/CommandManager"),
-        Menus          = brackets.getModule("command/Menus"),
-        todoerIcon     = $('<a title="Todoer" id="todoer-icon"></a>');
+        navigateMenu.addMenuDivider();
 
-
-    // Function to run when the menu item is clicked
-    function handleHelloWorld() {
-        window.alert("Hello, world!");
+        registerCommandHandler('bliitzkrieg.todoer.view', EXTENSION_NAME, togglePanel, 'Ctrl-Alt-Shift-T', viewMenu);
     }
-
-
-    // First, register a command - a UI-less object associating an id to a handler
-    var MY_COMMAND_ID = "helloworld.sayhello";   // package-style naming to avoid collisions
-    CommandManager.register("Hello World", MY_COMMAND_ID, handleHelloWorld);
-
-    // Then create a menu item bound to the command
-    // The label of the menu item is the name we gave the command (see above)
-    var menu = Menus.getMenu(Menus.AppMenuBar.FILE_MENU);
-    menu.addMenuItem(MY_COMMAND_ID);
-
-    // We could also add a key binding at the same time:
-    //menu.addMenuItem(MY_COMMAND_ID, "Ctrl-Alt-H");
-    // (Note: "Ctrl" is automatically mapped to "Cmd" on Mac)
+    
+    /**
+	 * Creates the "Todoer's bottom panel.
+	 */
+	function createBottomPanel() {
+		panel = WorkspaceManager.createBottomPanel('bliitzkrieg.todoer.panel', $(panelTemplate), 100);
+	}
+    
+    /**
+     * Description: Adds event listeners.
+     */
+    function addHandlers() {
+        todoerIcon.on('click', togglePanel).
+            appendTo('#main-toolbar .buttons');
+    }
+    
+    function togglePanel() {
+    }
+    
+    /**
+     * Loads external stylesheets.
+     */
+    function addStyles() {
+        ExtensionUtils.loadStyleSheet(module, 'css/todoer.css');
+    }
+    
+    /**
+     * Description: Initialize the extension.
+     */
+    AppInit.appReady(function () {
+        createBottomPanel();
+        addMenuCommands();
+        addStyles();
+        addHandlers();
+       // if (localStorage.getItem('georapbox.notes.visible') === 'true') {
+        //    togglePanel();
+       // }
+    });
 });
