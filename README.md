@@ -25,7 +25,7 @@ Please submit issues if any bugs are found
 Feel free to submit a pull request if you want to add a feature, or clean my code :D! Otherwise submit an issue with the request and I will try to implement it swiftly!
 
 ##License
-MIT
+MIT - See LICENSE file
 
 ##Creator
 [Luca DeCaprio 2015](https://github.com/bliitzkrieg)
