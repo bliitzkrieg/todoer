@@ -7,6 +7,8 @@ Todoer is a tool to compile all your todo comments into a list for easier viewin
 
 ` <!-- todo:: This is an HTML todo example -->`
 
+`# todo:: This is a bash example`
+
 ##The UI
 ![Todoer UI](http://i.imgur.com/0jyYrgk.png "Todoer UI")
 
