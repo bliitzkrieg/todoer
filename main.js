@@ -158,6 +158,13 @@ define(function (require, exports, module) {
         registerCommandHandler('bliitzkrieg.todoer.view', EXTENSION_NAME, togglePanel, 'Ctrl-Alt-Shift-T', viewMenu);
     }
     
+    /**
+     * Adds a listenor that triggers the get todo function
+     */
+    function fileSavedHandler($event, listener){
+        search();
+    }
+    
      /**
      * Description: Adds handlers
      */
@@ -173,6 +180,8 @@ define(function (require, exports, module) {
                 openFile($this.data('path'), $this.data('line'));
             })
             .on('click', '.close', togglePanel);
+        
+        $(DocumentManager).on('documentSaved workingSetAdd pathDeleted', fileSavedHandler);
     }
     
     /**

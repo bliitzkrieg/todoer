@@ -19,6 +19,7 @@
     min-height: 340px;
     max-height: 340px;
 }
+
 .table-wrapper{
     overflow: scroll;
     overflow-x: hidden;
@@ -31,15 +32,15 @@
     font-size: 22px;
     cursor: auto;
 }
-/* todo:: Yolo */
+
 .table > tbody > tr:nth-child(even){
     background: #282828;
 }
-/* todo:: Yolo */
+
 .table > tbody > tr > td:first-child{
     text-align: center;
 }
-/* todo:: Yolo */
+
 .table > tbody > tr > td{
     cursor:pointer;
 }
@@ -52,7 +53,6 @@ header{
     display: inline-block;
 }
 
-/* todo:: Test */
 .caption{
     display: inline-block;
     margin-left: 16px;
@@ -66,7 +66,6 @@ header{
     margin: 5px;
 }
 
-/* todo:: F123 */
 .close{
     position: absolute;
     top: 0;
