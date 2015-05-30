@@ -7,13 +7,12 @@ define(function (require, exports, module) {
     /**
     * Constants
     */
-
     var EXTENSION_NAME = "Todoer",
         REGEX = /\/\*[\r\n\t\f ]todo::|<!--[\r\n\t\f ]*help::|[\r\n\t\f ]\*\/|[\r\n\t\f ]*-->/g;
 
     /**
     * Variables
-    */   
+    */
     var CommandManager             = brackets.getModule("command/CommandManager"),
         Commands                   = brackets.getModule("command/Commands"),
         Menus                      = brackets.getModule("command/Menus"),
@@ -38,49 +37,10 @@ define(function (require, exports, module) {
         panel;
     
     /**
-     * Description: Adds menu commands.
-     */
-    
-    function addMenuCommands() {
-        var navigateMenu = Menus.getMenu(Menus.AppMenuBar.NAVIGATE_MENU),
-            viewMenu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU),
-            registerCommandHandler = function (commandId, menuName, handler, shortcut, menu) {
-                CommandManager.register(menuName, commandId, handler);
-                menu.addMenuItem(commandId);
-                KeyBindingManager.addBinding(commandId, shortcut);
-            };
-
-        navigateMenu.addMenuDivider();
-
-        registerCommandHandler('bliitzkrieg.todoer.view', EXTENSION_NAME, togglePanel, 'Ctrl-Alt-Shift-T', viewMenu);
-    }
-
-    /**
 	 * Creates the "Todoer's bottom panel.
 	 */
     function createBottomPanel() {
         panel = WorkspaceManager.createBottomPanel('bliitzkrieg.todoer.panel', $(panelTemplate), 100);
-    }
-
-    /**
-     * Description: Adds handlers
-     */
-    function addHandlers() {
-        todoerIcon.on('click', togglePanel).
-            appendTo('#main-toolbar .buttons');
-        
-        var todoPanel = $('#todoer-panel');
-        
-        todoPanel
-            .on('click', '.todo-item', function(){
-                var $this = $(this);
-                openFile($this.data('path'), $this.data('line'));
-            })
-            .on('click', '.close', togglePanel);
-        
-        Document.notifySave(function(){
-            window.alert('saving..');
-        });
     }
     
      /**
@@ -95,26 +55,8 @@ define(function (require, exports, module) {
                 });
             }
             Editor.setCursorPos(line);
-        }
-        else{
+        }else{
             window.alert('An error occured opening file');
-        }
-    }
-    
-    /**
-     * Toggles notes bottom panel state.
-     */
-    function togglePanel() {
-        if (panel.isVisible()) {
-            panel.hide();
-            todoerIcon.removeClass('active');
-            CommandManager.get('bliitzkrieg.todoer.view').setChecked(false);
-            //localStorage.setItem('georapbox.notes.visible', 'false');
-        } else {
-			panel.show();
-            todoerIcon.addClass('active');
-            CommandManager.get('bliitzkrieg.todoer.view').setChecked(true);
-            //localStorage.setItem('georapbox.notes.visible', 'true');
         }
     }
 
@@ -123,18 +65,6 @@ define(function (require, exports, module) {
      */
     function addStyles() {
         ExtensionUtils.loadStyleSheet(module, 'css/todoer.css');
-    }
-    
-    /**
-     * Searches files for todoes and sets results
-     */
-    function search(results){    
-        clearSearch(results);
-
-        FindInFiles.doSearchInScope(searchQuery, null, null, null, null).then(function(x){
-            results = processResults(x);
-            setPanelWithResults(results);
-        });
     }
     
     /**
@@ -177,12 +107,12 @@ define(function (require, exports, module) {
      * Sets results to panel
      */
     function setPanelWithResults(results){
-        var html = "<tr><td>Todo</td><td>File</td><td>Line #</td></tr>",
+        var html = "<tr><td>Line</td><td>Todo</td><td>File</td></tr>",
             addRow = function(row){
             return "<tr class='todo-item' data-line='" + row.line + "' data-path='" + row.path + "'>" + 
+                "<td>" + row.line + "</td>" +
                 "<td>" + row.todo + "</td>" +
                 "<td>" + row.path + "</td>" +
-                "<td>" + row.line + "</td>" +
                 "</tr>";
         };
         
@@ -192,7 +122,69 @@ define(function (require, exports, module) {
             }
         }
         
-        $(".table").append(html);
+        $(".table").empty().append(html);
+    }
+    
+    /**
+     * Toggles notes bottom panel state.
+     */
+    function togglePanel() {
+        if (panel.isVisible()) {
+            panel.hide();
+            todoerIcon.removeClass('active');
+            CommandManager.get('bliitzkrieg.todoer.view').setChecked(false);
+        } else {
+			panel.show();
+            todoerIcon.addClass('active');
+            CommandManager.get('bliitzkrieg.todoer.view').setChecked(true);
+            search();
+        }
+    }
+    
+    /**
+     * Description: Adds menu commands.
+     */
+    function addMenuCommands() {
+        var navigateMenu = Menus.getMenu(Menus.AppMenuBar.NAVIGATE_MENU),
+            viewMenu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU),
+            registerCommandHandler = function (commandId, menuName, handler, shortcut, menu) {
+                CommandManager.register(menuName, commandId, handler);
+                menu.addMenuItem(commandId);
+                KeyBindingManager.addBinding(commandId, shortcut);
+            };
+
+        navigateMenu.addMenuDivider();
+
+        registerCommandHandler('bliitzkrieg.todoer.view', EXTENSION_NAME, togglePanel, 'Ctrl-Alt-Shift-T', viewMenu);
+    }
+    
+     /**
+     * Description: Adds handlers
+     */
+    function addHandlers() {
+        todoerIcon.on('click', togglePanel).
+            appendTo('#main-toolbar .buttons');
+        
+        var todoPanel = $('#todoer-panel');
+        
+        todoPanel
+            .on('click', '.todo-item', function(){
+                var $this = $(this);
+                openFile($this.data('path'), $this.data('line'));
+            })
+            .on('click', '.close', togglePanel);
+    }
+    
+    /**
+     * Searches files for todoes and sets results
+     */
+    function search(){
+        clearSearch(searchResults);
+
+        FindInFiles.doSearchInScope(searchQuery, null, null, null, null).then(function(x){
+            searchResults = processResults(x);
+            setPanelWithResults(searchResults);
+        });
     }
     
     /**
@@ -203,7 +195,6 @@ define(function (require, exports, module) {
         addMenuCommands();
         addStyles();
         addHandlers();
-         
-        search(searchResults);
+        search();
     });
 });

@@ -12,3 +12,63 @@
     float:right;
     color:#BBBBBB;
 }
+
+#todoer-panel{
+    background-color: #222222;
+    padding: 12px;
+    min-height: 340px;
+    max-height: 340px;
+}
+.table-wrapper{
+    overflow: scroll;
+    overflow-x: hidden;
+    display:block;
+    height: 260px;
+}
+
+.table > tbody > tr:first-child{
+    color: #CAFF98;
+    font-size: 22px;
+    cursor: auto;
+}
+/* todo:: Yolo */
+.table > tbody > tr:nth-child(even){
+    background: #282828;
+}
+/* todo:: Yolo */
+.table > tbody > tr > td:first-child{
+    text-align: center;
+}
+/* todo:: Yolo */
+.table > tbody > tr > td{
+    cursor:pointer;
+}
+
+header{
+    position: relative;
+}
+
+.title{
+    display: inline-block;
+}
+
+/* todo:: Test */
+.caption{
+    display: inline-block;
+    margin-left: 16px;
+    font-size: 23px;
+    color: #5F5F5F;
+}
+
+.divider{
+    border-top: none;
+    border-bottom: 1px solid #444;
+    margin: 5px;
+}
+
+/* todo:: F123 */
+.close{
+    position: absolute;
+    top: 0;
+    right: 0;
+}
