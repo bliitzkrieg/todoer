@@ -69,7 +69,7 @@ define(function (require, exports, module) {
     
     /**
      * Cleans comment and removes closing comment tag for supported langauges.
-     * Current support: CSS, HTML
+     * Current support: CSS, JS, HTML, BASH
      */
     function cleanTodo(todo){
         return todo.replace(REGEX, '').replace('<!--', '');
