@@ -10,6 +10,9 @@ Todoer is a tool to compile all your todo comments into a list for easier viewin
 ##The UI
 ![Todoer UI](http://i.imgur.com/0jyYrgk.png "Todoer UI")
 
+## Language Support
+Currently it supports HTML, JS And BASH
+
 ##Installation
 Please use the Brackets Package Manager to install Todoer.
 
