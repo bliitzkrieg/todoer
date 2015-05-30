@@ -29,3 +29,6 @@ MIT
 
 ##Creator
 [Luca DeCaprio 2015](https://github.com/bliitzkrieg)
+
+##Contact
+Feel free to contact me at Luca[at]decapr.io
