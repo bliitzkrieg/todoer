@@ -3,9 +3,9 @@
 Todoer is a tool to compile all your todo comments into a list for easier viewing and task elimination!
 
 ##Syntax
-` // todo:: This is an JavaScript todo example
- <!-- todo:: This is an HTML todo example -->
-`
+` // todo:: This is an JavaScript todo example`
+` <!-- todo:: This is an HTML todo example -->`
+
 ##The UI
 ![Todoer UI](http://i.imgur.com/0jyYrgk.png "Todoer UI")
 
