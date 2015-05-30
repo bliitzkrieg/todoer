@@ -54,7 +54,7 @@ define(function (require, exports, module) {
                     fullPath: path
                 });
             }
-            Editor.setCursorPos(line);
+            Editor.setCursorPos(line, 0, true);
         }else{
             window.alert('An error occured opening file');
         }
