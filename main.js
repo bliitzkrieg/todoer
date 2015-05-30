@@ -134,7 +134,7 @@ define(function (require, exports, module) {
             todoerIcon.removeClass('active');
             CommandManager.get('bliitzkrieg.todoer.view').setChecked(false);
         } else {
-			panel.show();
+            panel.show();
             todoerIcon.addClass('active');
             CommandManager.get('bliitzkrieg.todoer.view').setChecked(true);
             search();
@@ -197,7 +197,7 @@ define(function (require, exports, module) {
     }
     
     /**
-     * Description: Initialize the extension.
+     * Initialize the extension.
      */
     AppInit.appReady(function () {
         createBottomPanel();
