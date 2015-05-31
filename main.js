@@ -18,7 +18,6 @@ define(function (require, exports, module) {
         Menus                      = brackets.getModule("command/Menus"),
         KeyBindingManager          = brackets.getModule('command/KeyBindingManager'),
         WorkspaceManager           = brackets.getModule('view/WorkspaceManager'),
-        Editor                     = brackets.getModule('editor/Editor'),
         EditorManager              = brackets.getModule('editor/EditorManager'),
         ExtensionUtils             = brackets.getModule('utils/ExtensionUtils'),
         Document                   = brackets.getModule('document/Document'),
@@ -34,7 +33,8 @@ define(function (require, exports, module) {
                                         isRegexp: false
                                      },
         searchResults              = [],
-        panel;
+        panel,
+        editor;
     
     /**
 	 * Creates the "Todoer's bottom panel.
@@ -54,7 +54,8 @@ define(function (require, exports, module) {
                     fullPath: path
                 });
             }
-            Editor.setCursorPos(line, 0, true);
+            editor = EditorManager.getCurrentFullEditor();
+            editor.setCursorPos(line, 0, true);
         }else{
             window.alert('An error occured opening file');
         }
@@ -109,12 +110,12 @@ define(function (require, exports, module) {
     function setPanelWithResults(results){
         var html = "<tr><td>Line</td><td>Todo</td><td>File</td></tr>",
             addRow = function(row){
-            return "<tr class='todo-item' data-line='" + row.line + "' data-path='" + row.path + "'>" + 
-                "<td>" + row.line + "</td>" +
-                "<td>" + row.todo + "</td>" +
-                "<td>" + row.path + "</td>" +
-                "</tr>";
-        };
+                return "<tr class='todo-item' data-line='" + row.line + "' data-path='" + row.path + "'>" + 
+                    "<td>" + row.line + "</td>" +
+                    "<td>" + row.todo + "</td>" +
+                    "<td>" + row.path + "</td>" +
+                    "</tr>";
+            };
         
         for (var key in results) {
             if (results.hasOwnProperty(key)) {
@@ -188,9 +189,8 @@ define(function (require, exports, module) {
      * Searches files for todoes and sets results
      */
     function search(){
-        clearSearch(searchResults);
-
         FindInFiles.doSearchInScope(searchQuery, null, null, null, null).then(function(x){
+            clearSearch(searchResults); 
             searchResults = processResults(x);
             setPanelWithResults(searchResults);
         });
@@ -205,5 +205,6 @@ define(function (require, exports, module) {
         addStyles();
         addHandlers();
         search();
+        editor = EditorManager.getCurrentFullEditor();
     });
 });
