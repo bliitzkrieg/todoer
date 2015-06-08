@@ -54,11 +54,11 @@ define(function (require, exports, module) {
                     fullPath: path
                 });
             }
-            editor = EditorManager.getCurrentFullEditor();
-            editor.setCursorPos(line, 0, true);
         }else{
             window.alert('An error occured opening file');
         }
+        editor = EditorManager.getCurrentFullEditor();
+        editor.setCursorPos(line, 0, true);
     }
 
     /**

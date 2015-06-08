@@ -1,10 +1,9 @@
 #todoer-icon {
-    background: url(../images/todoer-icon.svg) no-repeat 0 0;
-    background-size: 24px;
+    background: url(../images/todoer-icon-grey.svg) no-repeat 0 0;
 }
 
 #todoer-icon.active {
-    background: url(../images/todoer-icon-grey.svg) no-repeat 0 0;
+    background: url(../images/todoer-icon.svg) no-repeat 0 0;
 }
 
 /* todo:: Fix this bug */
