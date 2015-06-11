@@ -23,27 +23,35 @@ define(function (require, exports, module) {
         Document                   = brackets.getModule('document/Document'),
         DocumentManager            = brackets.getModule('document/DocumentManager'),
         File                       = brackets.getModule('filesystem/File'),
+        FileFilter                 = brackets.getModule('search/FileFilters'),
         AppInit                    = brackets.getModule('utils/AppInit'),
         FindInFiles                = brackets.getModule('search/FindInFiles'),
         todoerIcon                 = $('<a title="' + EXTENSION_NAME + '" id="todoer-icon"></a>'),
         panelTemplate              = require('text!html/panel.html'),
+        excludeFolders             = [
+                                        'node_modules',
+                                        'bower_components',
+                                        '.min.*',
+                                        '/.*/'
+                                     ],
         searchQuery                = {
                                         query: 'todo::',
                                         caseSensitive: false,
                                         isRegexp: false
                                      },
         searchResults              = [],
+        filter                     = FileFilter.compile(excludeFolders),
         panel,
         editor;
-    
+
     /**
 	 * Creates the "Todoer's bottom panel.
 	 */
     function createBottomPanel() {
         panel = WorkspaceManager.createBottomPanel('bliitzkrieg.todoer.panel', $(panelTemplate), 100);
     }
-    
-     /**
+
+    /**
      * Opens file from path
      */
     function openFile(path, line) {
@@ -67,7 +75,7 @@ define(function (require, exports, module) {
     function addStyles() {
         ExtensionUtils.loadStyleSheet(module, 'css/todoer.css');
     }
-    
+
     /**
      * Cleans comment and removes closing comment tag for supported langauges.
      * Current support: CSS, JS, HTML, BASH
@@ -75,18 +83,18 @@ define(function (require, exports, module) {
     function cleanTodo(todo) {
         return todo.replace(REGEX, '').replace('<!--', '');
     }
-    
+
     /**
      * Process JSON and returns array of objects
      */
     function processResults(data) {
         var results = [],
             key;
-        
+
         for (key in data) {
             if (data.hasOwnProperty(key)) {
                 var i;
-                
+
                 for (i = 0; i < data[key].matches.length; i++) {
                     var obj = {
                         todo: cleanTodo(data[key].matches[i].line),
@@ -99,14 +107,14 @@ define(function (require, exports, module) {
         }
         return results;
     }
-    
-     /**
+
+    /**
      * Clears search results
      */
     function clearSearch(results) {
         results = [];
     }
-    
+
     /**
      * Sets results to panel
      */
@@ -120,27 +128,27 @@ define(function (require, exports, module) {
                     "<td>" + row.path + "</td>" +
                     "</tr>";
             };
-        
+
         for (key in results) {
             if (results.hasOwnProperty(key)) {
                 html += addRow(results[key]);
             }
         }
-        
+
         $(".todo-table").empty().append(html);
     }
-    
-     /**
+
+    /**
      * Searches files for todoes and sets results
      */
     function search() {
-        FindInFiles.doSearchInScope(searchQuery, null, null, null, null).then(function (x) {
+        FindInFiles.doSearchInScope(searchQuery, null, filter, null, null).then(function (x) {
             clearSearch(searchResults);
             searchResults = processResults(x);
             setPanelWithResults(searchResults);
         });
     }
-    
+
     /**
      * Toggles notes bottom panel state.
      */
@@ -156,7 +164,7 @@ define(function (require, exports, module) {
             search();
         }
     }
-    
+
     /**
      * Description: Adds menu commands.
      */
@@ -173,33 +181,33 @@ define(function (require, exports, module) {
 
         registerCommandHandler('bliitzkrieg.todoer.view', EXTENSION_NAME, togglePanel, 'Ctrl-Alt-Shift-T', viewMenu);
     }
-    
+
     /**
      * Adds a listenor that triggers the get todo function
      */
     function fileSavedHandler($event, listener) {
         search();
     }
-    
-     /**
+
+    /**
      * Description: Adds handlers
      */
     function addHandlers() {
         todoerIcon.on('click', togglePanel).
-            appendTo('#main-toolbar .buttons');
-        
+        appendTo('#main-toolbar .buttons');
+
         var todoPanel = $('#todoer-panel');
-        
+
         todoPanel
             .on('click', '.todo-item', function () {
-                var $this = $(this);
-                openFile($this.data('path'), $this.data('line'));
-            })
+            var $this = $(this);
+            openFile($this.data('path'), $this.data('line'));
+        })
             .on('click', '.todo-close', togglePanel);
-        
+
         $(DocumentManager).on('documentSaved workingSetAdd pathDeleted', fileSavedHandler);
     }
-        
+
     /**
      * Initialize the extension.
      */
