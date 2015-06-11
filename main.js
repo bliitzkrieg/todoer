@@ -123,7 +123,7 @@ define(function (require, exports, module) {
             }
         }
         
-        $(".table").empty().append(html);
+        $(".todo-table").empty().append(html);
     }
     
     /**
@@ -180,7 +180,7 @@ define(function (require, exports, module) {
                 var $this = $(this);
                 openFile($this.data('path'), $this.data('line'));
             })
-            .on('click', '.close', togglePanel);
+            .on('click', '.todo-close', togglePanel);
         
         $(DocumentManager).on('documentSaved workingSetAdd pathDeleted', fileSavedHandler);
     }
