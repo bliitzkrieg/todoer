@@ -28,7 +28,7 @@ define(function (require, exports, module) {
         todoerIcon                 = $('<a title="' + EXTENSION_NAME + '" id="todoer-icon"></a>'),
         panelTemplate              = require('text!html/panel.html'),
         searchQuery                = {
-                                        query: "todo::",
+                                        query: 'todo::',
                                         caseSensitive: false,
                                         isRegexp: false
                                      },
@@ -46,15 +46,15 @@ define(function (require, exports, module) {
      /**
      * Opens file from path
      */
-    function openFile(path, line){
-        if (EditorManager.canOpenPath(path)){
+    function openFile(path, line) {
+        if (EditorManager.canOpenPath(path)) {
             var document = DocumentManager.getCurrentDocument();
-            if(document.file._path != path){
+            if (document.file._path !== path) {
                 CommandManager.execute(Commands.FILE_OPEN, {
                     fullPath: path
                 });
             }
-        }else{
+        } else {
             window.alert('An error occured opening file');
         }
         editor = EditorManager.getCurrentFullEditor();
@@ -72,26 +72,29 @@ define(function (require, exports, module) {
      * Cleans comment and removes closing comment tag for supported langauges.
      * Current support: CSS, JS, HTML, BASH
      */
-    function cleanTodo(todo){
+    function cleanTodo(todo) {
         return todo.replace(REGEX, '').replace('<!--', '');
     }
     
     /**
      * Process JSON and returns array of objects
      */
-    function processResults(data){
-        var results = [];
+    function processResults(data) {
+        var results = [],
+            key;
         
-        for (var key in data) {
+        for (key in data) {
             if (data.hasOwnProperty(key)) {
-                for(var i=0; i < data[key].matches.length; i++){
+                var i;
+                
+                for (i = 0; i < data[key].matches.length; i++) {
                     var obj = {
                         todo: cleanTodo(data[key].matches[i].line),
                         path: key,
                         line: data[key].matches[i].start.line
-                    }
+                    };
                     results.push(obj);
-                }   
+                }
             }
         }
         return results;
@@ -100,30 +103,42 @@ define(function (require, exports, module) {
      /**
      * Clears search results
      */
-    function clearSearch(results){
+    function clearSearch(results) {
         results = [];
     }
     
     /**
      * Sets results to panel
      */
-    function setPanelWithResults(results){
-        var html = "<tr><td>Line</td><td>Todo</td><td>File</td></tr>",
-            addRow = function(row){
-                return "<tr class='todo-item' data-line='" + row.line + "' data-path='" + row.path + "'>" + 
+    function setPanelWithResults(results) {
+        var key,
+            html = "<tr><td>Line</td><td>Todo</td><td>File</td></tr>",
+            addRow = function (row) {
+                return "<tr class='todo-item' data-line='" + row.line + "' data-path='" + row.path + "'>" +
                     "<td>" + row.line + "</td>" +
                     "<td>" + row.todo + "</td>" +
                     "<td>" + row.path + "</td>" +
                     "</tr>";
             };
         
-        for (var key in results) {
+        for (key in results) {
             if (results.hasOwnProperty(key)) {
-                html+=addRow(results[key]);
+                html += addRow(results[key]);
             }
         }
         
         $(".todo-table").empty().append(html);
+    }
+    
+     /**
+     * Searches files for todoes and sets results
+     */
+    function search() {
+        FindInFiles.doSearchInScope(searchQuery, null, null, null, null).then(function (x) {
+            clearSearch(searchResults);
+            searchResults = processResults(x);
+            setPanelWithResults(searchResults);
+        });
     }
     
     /**
@@ -162,7 +177,7 @@ define(function (require, exports, module) {
     /**
      * Adds a listenor that triggers the get todo function
      */
-    function fileSavedHandler($event, listener){
+    function fileSavedHandler($event, listener) {
         search();
     }
     
@@ -176,7 +191,7 @@ define(function (require, exports, module) {
         var todoPanel = $('#todoer-panel');
         
         todoPanel
-            .on('click', '.todo-item', function(){
+            .on('click', '.todo-item', function () {
                 var $this = $(this);
                 openFile($this.data('path'), $this.data('line'));
             })
@@ -184,18 +199,7 @@ define(function (require, exports, module) {
         
         $(DocumentManager).on('documentSaved workingSetAdd pathDeleted', fileSavedHandler);
     }
-    
-    /**
-     * Searches files for todoes and sets results
-     */
-    function search(){
-        FindInFiles.doSearchInScope(searchQuery, null, null, null, null).then(function(x){
-            clearSearch(searchResults); 
-            searchResults = processResults(x);
-            setPanelWithResults(searchResults);
-        });
-    }
-    
+        
     /**
      * Initialize the extension.
      */
